@@ -9,18 +9,18 @@ import threading
 import time
 from operator_changes import changes
 
-
 # Chat APK -826999910
 # APK bot 5400717778:AAElaDpGCslweXlFKJqecCbsb0wtjueI8iI
 
 # Chat MY 1048052384
 # MY bot 5788985434:AAEFIj5fY2HnZw35alMaDBOfCvsBq_xGVPs
 
-operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы Ямала 1", "Минцифры Чувашии", "ЦТИПК", "МОБТИ", "IGS", "Ростехинвентаризация", "Рощино", "Мосгоргеотрест", "Татнефть", "ЦИОГД", "КПФУ",
+operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы Ямала 1", "Минцифры Чувашии", "ЦТИПК", "МОБТИ", "IGS",
+             "Ростехинвентаризация", "Рощино", "Мосгоргеотрест", "Татнефть", "ЦИОГД", "КПФУ",
              "ГЕКСАГОН", "ЦГКиИПД", "ПРИН", "Липецкоблтехинвентаризация", "ТНЦ РБ", "ГСИ", "ИПГ", "ЦКОиМН")
 
 non_mes = True
-dis_noti = False
+dis_noti = True
 timegt = '17'
 timelt = '9'
 
@@ -42,8 +42,9 @@ if __name__ == '__main__':
                 timegt = '16'
             elif w_day == 'Sun' or w_day == 'Sat':
                 dis_noti = True
-            if current_time > timegt or current_time < timelt:
-                dis_noti = True
+                continue
+            if int(timelt) < int(current_time) < int(timegt):
+                dis_noti = False
 
             time.sleep(3600)
 
@@ -113,8 +114,6 @@ if __name__ == '__main__':
             condition = False
             bot.stop_polling()
 
-
-
         @bot.message_handler(commands=['checkop'])
         def checkop(message):
             markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
@@ -123,23 +122,25 @@ if __name__ == '__main__':
                     continue
                 if index + 1 < len(operators):
                     op_button1 = telebot.types.KeyboardButton(operators[index])
-                    op_button2 = telebot.types.KeyboardButton(operators[index+1])
+                    op_button2 = telebot.types.KeyboardButton(operators[index + 1])
                     markup.add(op_button1, op_button2)
             hide_button = telebot.types.KeyboardButton("Убрать кнопки")
             markup.add(hide_button)
-            bot.send_message(chat_id=message.chat.id, text='Выбери оператора', reply_to_message_id=message.message_id, reply_markup=markup, disable_notification=dis_noti)
+            bot.send_message(chat_id=message.chat.id, text='Выбери оператора', reply_to_message_id=message.message_id,
+                             reply_markup=markup, disable_notification=dis_noti)
 
         @bot.message_handler(commands=['help'])
         def helper(message):
             bot.send_message(message.chat.id,
-                             '/restart - перезапуск бота\n/end - отрубить бота\n/checkop- изменения оперторов\n/status - состояние АПК\n/killapk - судный день АПК\n/mute - пусть умолкнет\n/unmute - будет болтать', disable_notification=dis_noti)
+                             '/restart - перезапуск бота\n/end - отрубить бота\n/checkop- изменения оперторов\n/status - состояние АПК\n/killapk - судный день АПК\n/mute - пусть умолкнет\n/unmute - будет болтать',
+                             disable_notification=dis_noti)
 
         @bot.message_handler(commands=['status'])
         def kill_apk(message):
             print(dis_noti)
             status = apk_status.stat()
             if len(status) > 0:
-                bot.send_message(message.chat.id,  '\n'.join(status) + '\n#косякапк', disable_notification=dis_noti)
+                bot.send_message(message.chat.id, '\n'.join(status) + '\n#косякапк', disable_notification=dis_noti)
                 print('Статус отправлен')
             else:
                 bot.send_message(message.chat.id, 'Всё круто', disable_notification=dis_noti)
@@ -155,14 +156,16 @@ if __name__ == '__main__':
                 if len(ch_list) < 5:
                     for index, el in enumerate(ch_list):
                         bot.send_message(message.chat.id, '{\n' + ',\n'.join(
-                            [f'{key.capitalize()}: {value}' for key, value in el.items()]) + '\n}', reply_markup=hide, disable_notification=dis_noti)
+                            [f'{key.capitalize()}: {value}' for key, value in el.items()]) + '\n}', reply_markup=hide,
+                                         disable_notification=dis_noti)
                         time.sleep(1)
                 else:
                     with open(f'Change_files/{message.text}_change.json', 'w') as file:
                         json.dump(ch_list, file, indent=4, ensure_ascii=False)
                         file.close()
                     with open(f'Change_files/{message.text}_change.json') as file:
-                        bot.send_document(message.chat.id, document=file, reply_markup=hide, disable_notification=dis_noti)
+                        bot.send_document(message.chat.id, document=file, reply_markup=hide,
+                                          disable_notification=dis_noti)
                         file.close()
 
 
