@@ -21,8 +21,8 @@ operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы
 
 non_mes = True
 dis_noti = True
-timegt = '17'
-timelt = '9'
+timelt = '17'
+timegt = '9'
 
 if __name__ == '__main__':
     API_TOKEN = '5400717778:AAElaDpGCslweXlFKJqecCbsb0wtjueI8iI'
@@ -42,8 +42,9 @@ if __name__ == '__main__':
                 timegt = '16'
             elif w_day == 'Sun' or w_day == 'Sat':
                 dis_noti = True
+                time.sleep(43200)
                 continue
-            if int(timelt) < int(current_time) < int(timegt):
+            if int(timegt) < int(current_time) < int(timelt):
                 dis_noti = False
 
             time.sleep(3600)
