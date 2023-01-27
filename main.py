@@ -39,14 +39,13 @@ if __name__ == '__main__':
             current_time = now.strftime("%H")
             w_day = now.strftime("%a")
             if w_day == 'Fri':
-                timegt = '16'
+                timelt = '16'
             elif w_day == 'Sun' or w_day == 'Sat':
                 dis_noti = True
                 time.sleep(43200)
                 continue
             if int(timegt) < int(current_time) < int(timelt):
                 dis_noti = False
-
             time.sleep(3600)
 
 
