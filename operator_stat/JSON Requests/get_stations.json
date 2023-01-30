@@ -1,0 +1,10 @@
+{
+  "operation": "Staions",
+  "query": "query Stations($filters: StationFilter){stations(filters: $filters){edges{node{name uuid}}}}",
+  "variables": {
+    "filters": {
+      "operatorUuidIn": ""
+    }
+
+  }
+}

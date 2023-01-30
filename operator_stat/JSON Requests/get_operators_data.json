@@ -1,0 +1,4 @@
+{
+  "operation": "OperatorData",
+  "query": "query OperatorData{operators{edges{node{shortName, fullName, uuid, source{filename, host, login, password, mask}}}}}"
+}

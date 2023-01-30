@@ -1,0 +1,11 @@
+{
+  "operation": "getDate",
+  "query": "query getDate($filters: FilesFilter, $first: Int){files(filters: $filters, first: $first){edges{node{dateCreatedReal}}}}",
+  "variables": {
+    "filters": {
+      "dateCreatedLte": "2022-12-05T23:59:59+00:00",
+      "dateCreatedGte": "2022-12-05T00:00:00+00:00"
+    },
+    "first": 1
+  }
+}

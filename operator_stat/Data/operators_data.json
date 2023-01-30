@@ -1,0 +1,182 @@
+{
+    "EFT": {
+        "name": "EFT Group",
+        "uuid": "17b248b6-2c6f-4654-aef5-e3bfcd9839d8",
+        "host": "82.202.202.138",
+        "login": "fsgs",
+        "password": "G9i4E3q5",
+        "filename": "/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "{{stations_name}}.*\\.{YY}[od]\\.*"
+    },
+    "ГКУ Ресурсы Ямала 2": {
+        "name": "Государственное казённое учреждение \"Ресурсы Ямала\" (2)",
+        "uuid": "2e176b96-29bc-4424-b4dc-71ef93f96fe1",
+        "host": "91.242.171.126",
+        "login": "fgbu",
+        "password": "!b2dDl6T'QY:u*qB",
+        "filename": "/Station/{YYYY}/{day_of_the_year_z_padded}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0_302_30s.{YY}o"
+    },
+    "АУ ЦИТ Минцифры Чувашии": {
+        "name": "АУ «ЦИТ» Минцифры Чувашии",
+        "uuid": "2fe29e2f-0ed4-4363-9e86-6a5287ab4c80",
+        "host": "195.2.214.115",
+        "login": "nsdi",
+        "password": "Rosreestr22",
+        "filename": "/Station/{YYYY}/{day_of_the_year_z_padded}/{{stations_name}}/",
+        "mask": "(({{stations_name}}.*{YYYY}{day_of_the_year_z_padded}0000_\\d\\d\\w.*O\\.(cr|rn)x))|(({{stations_name}}{day_of_the_year_z_padded}0\\.{YY}(d|o)))"
+    },
+    "ГБУ ПК ЦТИПК": {
+        "name": "ГБУ ПК Центр технической инвентаризации и кадастровой оценки Пермского края",
+        "uuid": "31a92c70-2ac5-4455-bea6-69e36a7add9a",
+        "host": "83.222.69.77",
+        "login": "ftp_ctipk",
+        "password": "ctipk_ftp1",
+        "filename": "/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0(_A)?\\.{YY}[do]\\.zip"
+    },
+    "ГБУ МО МОБТИ": {
+        "name": "ГБУ Московской области \"МОБТИ\"",
+        "uuid": "4c915537-a095-4617-9933-de06e90a2fee",
+        "host": "81.211.68.125",
+        "login": "rostreestr",
+        "password": "6oyhsC0Htrne",
+        "filename": "/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}\\w\\.rnx\\.zip"
+    },
+    "IGS": {
+        "name": "International GNSS Service (IGS)",
+        "uuid": "4db81f0f-d483-4bb3-b0fe-7c96dc4873b1",
+        "host": "igs.ign.fr",
+        "login": "anonymous",
+        "password": "anonymous@anonymous",
+        "filename": "/pub/igs/data/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "(({{stations_name}}.*{YYYY}{day_of_the_year_z_padded}0000_01D.*O\\.(cr|rn)x)|(({{stations_name}}{day_of_the_year_z_padded}0\\.{YY}(d|o))))\\.gz"
+    },
+    "Ростехинвентаризация": {
+        "name": "АО «Ростехинвентаризация – Федеральное БТИ»",
+        "uuid": "54fc5745-f57e-4669-a119-f2a376be0293",
+        "host": "ftp2.rosinv.ru",
+        "login": "rrapk",
+        "password": "dFkT58",
+        "filename": "/fsgs/Rinex/{YYYY}/{day_of_the_year_z_padded}/{{stations_name}}/",
+        "mask": "{{stations_name}}.*\\.{YY}[od]\\.*"
+    },
+    "АО Терминал Рощино": {
+        "name": "АО \"Терминал-Рощино\"",
+        "uuid": "6075f044-0933-4331-b359-dc5496c6f7e6",
+        "host": "46.61.235.94",
+        "login": "static_rosreestr",
+        "password": "Q?q\":eYALJL9",
+        "filename": "/STATIC/{YYYY}/{day_of_the_year_z_padded}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}\\w.*\\.{YY}[od]"
+    },
+    "ГБУ Мосгоргеотрест": {
+        "name": "ГБУ города Москвы «Московский городской трест геолого-геодезических и картографических работ» (ГБУ «Мосгоргеотрест»)",
+        "uuid": "829bbdca-c77f-449c-bdf6-a870f7554ae3",
+        "host": "ftp.mggt.ru",
+        "login": "cgkipd_user",
+        "password": "2CYoEnumHM",
+        "filename": "/{YYYY}/{MM}/{DD}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0\\.rnx\\.zip"
+    },
+    "Татнефть": {
+        "name": "ПАО \"Татнефть\"",
+        "uuid": "902f9bd2-ec60-4a17-b803-073f6fa89708",
+        "host": "185.117.145.116",
+        "login": "geo",
+        "password": "IWT12345",
+        "filename": "/GPSDATA/RNX/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0\\.{YY}[od]\\.Z"
+    },
+    "СПб ГКУ ЦИОГД": {
+        "name": "ГКУ Центр Информационного Обеспечения Градостроительной Деятельности г. Санкт-Петербург",
+        "uuid": "90696121-8bda-49cd-844d-a8788ffd5837",
+        "host": "ref.kgainfo.spb.ru",
+        "login": "GNSS-Spider-data",
+        "password": "cEU38qLY9}mq",
+        "filename": "/{YYYY}/{MM}/{DD}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}.*"
+    },
+    "ГКУ Ресурсы Ямала 1": {
+        "name": "Государственное казённое учреждение \"Ресурсы Ямала\" (1)",
+        "uuid": "9531ba04-f487-4181-ba9a-7963591e9765",
+        "host": "91.242.171.125",
+        "login": "fgbu",
+        "password": "!b2dDl6T'QY:u*qB",
+        "filename": "/Rinex/{YYYY}/{day_of_the_year_z_padded}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0.{YY}o"
+    },
+    "ФГАОУ ВО КПФУ": {
+        "name": "Федеральное государственное автономное образовательное учреждение высшего образования \"Казанский (Приволжский) федеральный университет\".",
+        "uuid": "96a26d6e-2f5f-4fde-be1d-d92a96ff4f83",
+        "host": "178.213.241.23",
+        "login": "anonymous",
+        "password": "anonymous",
+        "filename": "/Rinex/{YYYY}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0\\.{YY}[od]\\.Z"
+    },
+    "ГЕКСАГОН ГЕОСИСТЕМС РУС": {
+        "name": "ООО “ГЕКСАГОН ГЕОСИСТЕМС РУС”",
+        "uuid": "a94cf098-fdf1-4644-a002-32a2859c65a3",
+        "host": "89.108.117.231",
+        "login": "sitronics",
+        "password": "8bYt3MpClU8MpGPXP",
+        "filename": "/{YYYY}/{MM}/{DD}/",
+        "mask": "{{stations_name}}.*"
+    },
+    "ЦГКиИПД": {
+        "name": "ФГБУ \"Центр геодезии, картографии и ИПД\"",
+        "uuid": "abb1dc0f-8234-4aac-9117-596376d80d61",
+        "host": "194.135.10.83",
+        "login": "fsgs",
+        "password": "fsgs",
+        "filename": "/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "(({{stations_name}}.*{YYYY}{day_of_the_year_z_padded}0000_\\d\\d\\w.*O\\.(cr|rn)x)\\.gz)|(({{stations_name}}{day_of_the_year_z_padded}0\\.{YY}(d|o))\\.gz)"
+    },
+    "ПРИН": {
+        "name": "АО \"ПРИН\"",
+        "uuid": "acda981a-81f6-4097-a23d-1aee75d8a226",
+        "host": "37.233.85.40",
+        "login": "kronshtadt",
+        "password": ",7?eE$",
+        "filename": "/Archive/Station/{YYYY}/{day_of_the_year_z_padded}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0\\.zip"
+    },
+    "Липецкоблтехинвентаризация": {
+        "name": "ОГУП \"Липецкоблтехинвентаризация\"",
+        "uuid": "bdbbccf1-4183-40e2-9e7e-55d96b1807d7",
+        "host": "213.59.133.146",
+        "login": "Rinex",
+        "password": "Bti48Rinex#",
+        "filename": "/rinex_lip/RefData\\.{YY}/Month\\.{short_month}/",
+        "mask": ""
+    },
+    "ГСИ": {
+        "name": "ООО «ГЕОСТРОЙИЗЫСКАНИЯ»",
+        "uuid": "cb834adb-9a8b-4d5a-9cf5-b685ae2f1895",
+        "host": "82.202.176.56",
+        "login": "GuestFTP7",
+        "password": "Z@}kL~l44b",
+        "filename": "/daily/bd74a646-2bf6-43a5-ae31-2fe7389382fa/{YYYY}/{day_of_the_year_z_padded}/",
+        "mask": "{YYYY}_{day_of_the_year_z_padded}_{{stations_name}}_Tps[.]zip"
+    },
+    "ФГБУ ИПГ": {
+        "name": "Институт прикладной геофизики имени академика Е.К. Федорова",
+        "uuid": "d3cd4ab5-af3d-4108-b027-982862cd0179",
+        "host": "127.0.0.1",
+        "login": "1",
+        "password": "1",
+        "filename": "1",
+        "mask": ""
+    },
+    "ГБУ КО ЦКОиМН": {
+        "name": "Государственное бюджетное учреждение Калининградской области «Центр кадастровой оценки и мониторинга недвижимости»",
+        "uuid": "e34ce754-f9d8-4845-af82-573a000ad804",
+        "host": "gps.gov39.ru",
+        "login": "file_user",
+        "password": "vfGt55",
+        "filename": "/push/{YYYY}/{MM}/{DD}/{{stations_name}}/",
+        "mask": "{{stations_name}}{day_of_the_year_z_padded}0\\.rnx\\.zip"
+    }
+}

@@ -38,7 +38,7 @@ def stat():
 
     while not state:
         try:
-            requests.post(url='https://fsgs.cgkipd.ru/federation/graphql', json={"operationName": "Operators", "query": "query Operators{operators{edges{node{fullName}}}}"}, timeout=60)
+            requests.post(url='https://fsgs.cgkipd.ru/federation/graphql', json={"operationName": "Operators", "query": "query Operators{operators{edges{node{fullName}}}}"})
             state = True
         except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as er:
             if i > 4:

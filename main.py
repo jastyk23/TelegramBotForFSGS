@@ -9,6 +9,7 @@ import threading
 import time
 from operator_changes import changes
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+import operator_stat
 
 
 # Chat APK -826999910
@@ -142,23 +143,23 @@ if __name__ == '__main__':
             bot.send_message(chat_id=message.chat.id, text='Выбери оператора', reply_to_message_id=message.message_id,
                              reply_markup=markup, disable_notification=dis_noti)
 
-            @bot.message_handler(commands=['opstat'])
-            def checker(message):
-                global  checkop
-                checkop = True
-                markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-                for index, operator in enumerate(operators):
-                    if index != 0 and index % 2 != 0:
-                        continue
-                    if index + 1 < len(operators):
-                        op_button1 = telebot.types.KeyboardButton(operators[index])
-                        op_button2 = telebot.types.KeyboardButton(operators[index + 1])
-                        markup.add(op_button1, op_button2)
-                hide_button = telebot.types.KeyboardButton("Убрать кнопки")
-                markup.add(hide_button)
-                bot.send_message(chat_id=message.chat.id, text='Выбери оператора',
-                                 reply_to_message_id=message.message_id,
-                                 reply_markup=markup, disable_notification=dis_noti)
+        @bot.message_handler(commands=['opstat'])
+        def checker(message):
+            global  checkop
+            checkop = True
+            markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+            for index, operator in enumerate(operators):
+                if index != 0 and index % 2 != 0:
+                    continue
+                if index + 1 < len(operators):
+                    op_button1 = telebot.types.KeyboardButton(operators[index])
+                    op_button2 = telebot.types.KeyboardButton(operators[index + 1])
+                    markup.add(op_button1, op_button2)
+            hide_button = telebot.types.KeyboardButton("Убрать кнопки")
+            markup.add(hide_button)
+            bot.send_message(chat_id=message.chat.id, text='Выбери оператора',
+                             reply_to_message_id=message.message_id,
+                             reply_markup=markup, disable_notification=dis_noti)
 
 
         @bot.message_handler(commands=['help'])
@@ -201,25 +202,28 @@ if __name__ == '__main__':
                                               disable_notification=dis_noti)
                             file.close()
                 if checkop:
+                    bot.send_message(message.chat.id, 'Выбери дату', reply_markup=hide)
                     calendar, step = DetailedTelegramCalendar().build()
-                    bot.send_message(m.chat.id,
-                                     f"Select {LSTEP[step]}",
+                    bot.send_message(message.chat.id,
+                                     f"Выбери {LSTEP[step]}",
                                      reply_markup=calendar)
 
                     @bot.callback_query_handler(func=DetailedTelegramCalendar.func())
                     def cal(c):
                         result, key, step = DetailedTelegramCalendar().process(c.data)
                         if not result and key:
-                            bot.edit_message_text(f"Select {LSTEP[step]}",
+                            bot.edit_message_text(f"Выбери {LSTEP[step]}",
                                                   c.message.chat.id,
                                                   c.message.message_id,
                                                   reply_markup=key)
                         elif result:
-                            bot.edit_message_text(f"You selected {result}",
+                            bot.edit_message_text(f"{result}",
                                                   c.message.chat.id,
                                                   c.message.message_id)
+                            print(result)
 
-
+                        mes = operator_stat.check_op(message, result)
+                        print(mes)
 
 
 
