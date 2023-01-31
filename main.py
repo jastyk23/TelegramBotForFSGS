@@ -8,8 +8,8 @@ import telebot
 import threading
 import time
 from operator_changes import changes
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
-import operator_stat
+
+
 
 
 # Chat APK -826999910
@@ -24,15 +24,13 @@ operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы
 
 non_mes = True
 dis_noti = True
-changeop = False
-checkop = False
 timelt = '17'
 timegt = '9'
 
 if __name__ == '__main__':
-    API_TOKEN = '5788985434:AAEFIj5fY2HnZw35alMaDBOfCvsBq_xGVPs'
+    API_TOKEN = '5400717778:AAElaDpGCslweXlFKJqecCbsb0wtjueI8iI'
     bot = telebot.TeleBot(API_TOKEN)
-    chat_id = 1048052384
+    chat_id = -826999910
     state = True
     bot.send_message(chat_id, 'Я начал работать')
 
@@ -128,8 +126,6 @@ if __name__ == '__main__':
 
         @bot.message_handler(commands=['changeop'])
         def changer(message):
-            global changeop
-            changeop = True
             markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
             for index, operator in enumerate(operators):
                 if index != 0 and index % 2 != 0:
@@ -143,29 +139,12 @@ if __name__ == '__main__':
             bot.send_message(chat_id=message.chat.id, text='Выбери оператора', reply_to_message_id=message.message_id,
                              reply_markup=markup, disable_notification=dis_noti)
 
-        @bot.message_handler(commands=['opstat'])
-        def checker(message):
-            global  checkop
-            checkop = True
-            markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-            for index, operator in enumerate(operators):
-                if index != 0 and index % 2 != 0:
-                    continue
-                if index + 1 < len(operators):
-                    op_button1 = telebot.types.KeyboardButton(operators[index])
-                    op_button2 = telebot.types.KeyboardButton(operators[index + 1])
-                    markup.add(op_button1, op_button2)
-            hide_button = telebot.types.KeyboardButton("Убрать кнопки")
-            markup.add(hide_button)
-            bot.send_message(chat_id=message.chat.id, text='Выбери оператора',
-                             reply_to_message_id=message.message_id,
-                             reply_markup=markup, disable_notification=dis_noti)
 
 
         @bot.message_handler(commands=['help'])
         def helper(message):
             bot.send_message(message.chat.id,
-                             '/restart - перезапуск бота\n/end - отрубить бота\n/changeop- изменения оперторов\n/opstat - статистика по опертору\n/status - состояние АПК\n/killapk - судный день АПК\n/mute - пусть умолкнет\n/unmute - будет болтать',
+                             '/restart - перезапуск бота\n/end - отрубить бота\n/changeop- изменения оперторов\n/status - состояние АПК\n/killapk - судный день АПК\n/mute - пусть умолкнет\n/unmute - будет болтать',
                              disable_notification=dis_noti)
 
         @bot.message_handler(commands=['status'])
@@ -185,52 +164,22 @@ if __name__ == '__main__':
             if message.text == "Убрать кнопки":
                 bot.send_message(message.chat.id, 'Прячу клавиатуру', reply_markup=hide, disable_notification=dis_noti)
             elif message.text in operators:
-                if changeop:
-                    ch_list = changes(message.text)
-                    if len(ch_list) < 5:
-                        for index, el in enumerate(ch_list):
-                            bot.send_message(message.chat.id, '{\n' + ',\n'.join(
-                                [f'{key.capitalize()}: {value}' for key, value in el.items()]) + '\n}', reply_markup=hide,
-                                             disable_notification=dis_noti)
-                            time.sleep(1)
-                    else:
-                        with open(f'Change_files/{message.text}_change.json', 'w') as file:
-                            json.dump(ch_list, file, indent=4, ensure_ascii=False)
-                            file.close()
-                        with open(f'Change_files/{message.text}_change.json') as file:
-                            bot.send_document(message.chat.id, document=file, reply_markup=hide,
-                                              disable_notification=dis_noti)
-                            file.close()
-                if checkop:
-                    bot.send_message(message.chat.id, 'Выбери дату', reply_markup=hide)
-                    calendar, step = DetailedTelegramCalendar().build()
-                    bot.send_message(message.chat.id,
-                                     f"Выбери {LSTEP[step]}",
-                                     reply_markup=calendar)
+                ch_list = changes(message.text)
+                if len(ch_list) < 5:
+                    for index, el in enumerate(ch_list):
+                        bot.send_message(message.chat.id, '{\n' + ',\n'.join(
+                            [f'{key.capitalize()}: {value}' for key, value in el.items()]) + '\n}', reply_markup=hide,
+                                         disable_notification=dis_noti)
+                        time.sleep(1)
+                else:
+                    with open(f'Change_files/{message.text}_change.json', 'w') as file:
+                        json.dump(ch_list, file, indent=4, ensure_ascii=False)
+                        file.close()
+                    with open(f'Change_files/{message.text}_change.json') as file:
+                        bot.send_document(message.chat.id, document=file, reply_markup=hide,
+                                          disable_notification=dis_noti)
+                        file.close()
 
-                    @bot.callback_query_handler(func=DetailedTelegramCalendar.func())
-                    def cal(c):
-                        result, key, step = DetailedTelegramCalendar().process(c.data)
-                        if not result and key:
-                            bot.edit_message_text(f"Выбери {LSTEP[step]}",
-                                                  c.message.chat.id,
-                                                  c.message.message_id,
-                                                  reply_markup=key)
-                        elif result:
-                            bot.edit_message_text(f"{result}",
-                                                  c.message.chat.id,
-                                                  c.message.message_id)
-                            print(result)
-
-                        mes = operator_stat.check_op(message, result)
-                        print(mes)
-
-
-
-
-                if not changeop and not checkop:
-                    bot.send_message(message.chat.id, 'Что-то не так', reply_markup=hide,
-                                     disable_notification=dis_noti)
 
 
     thread3 = threading.Thread(target=timer, daemon=True, name='Time_thread')
