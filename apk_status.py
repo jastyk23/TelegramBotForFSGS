@@ -21,11 +21,11 @@ def stat():
     while not success:
 
         try:
-            req = requests.post(url=url, json=data, timeout=10)
+            req = requests.post(url=url, json=data, timeout=2)
             success = True
 
         except (OSError, ProtocolError, requests.exceptions.ConnectionError) as er:
-            if i > 4:
+            if i > 5:
                 print(er)
                 break
             i += 1
@@ -38,10 +38,13 @@ def stat():
 
     while not state:
         try:
-            requests.post(url='https://fsgs.cgkipd.ru/federation/graphql', json={"operationName": "Operators", "query": "query Operators{operators{edges{node{fullName}}}}"})
-            state = True
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as er:
-            if i > 4:
+            resp = requests.post(url='https://fsgs.cgkipd.ru/federation/graphql', json={"operationName": "Operators", "query": "query Operators($filters: OperatorsFilter){operators(filters: $filters){edges{node{fullName}}}}", "variables": {"fileters": {"shortName": "EFT"}}}, timeout=2).json()
+            if 'errors' not in resp:
+                state = True
+            else:
+                raise ResourceWarning
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout, ResourceWarning) as er:
+            if i > 10:
                 print(er)
                 break
             i += 1

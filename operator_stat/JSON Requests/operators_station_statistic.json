@@ -1,9 +1,0 @@
-{
-  "operation": "operatorStationsStatistics",
-  "query": "query operatorStationsStatistics($dateTimeGte: DateTime!, $dateTimeLte: DateTime!, $operatorUuids: [UUID]!) {  operatorStationsStatistics(    dateTimeGte: $dateTimeGte    dateTimeLte: $dateTimeLte    operatorUuids: $operatorUuids ){succeed failed}}",
-  "variables": {
-    "dateTimeGte": "",
-    "dateTimeLte": "",
-    "operatorUuids": ""
-  }
-}

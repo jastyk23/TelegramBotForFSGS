@@ -8,8 +8,7 @@ import telebot
 import threading
 import time
 from operator_changes import changes
-
-
+from requests.exceptions import ReadTimeout
 
 
 # Chat APK -826999910
@@ -17,6 +16,7 @@ from operator_changes import changes
 
 # Chat MY 1048052384
 # MY bot 5788985434:AAEFIj5fY2HnZw35alMaDBOfCvsBq_xGVPs
+
 
 operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы Ямала 1", "Минцифры Чувашии", "ЦТИПК", "МОБТИ", "IGS",
              "Ростехинвентаризация", "Рощино", "Мосгоргеотрест", "Татнефть", "ЦИОГД", "КПФУ",
@@ -28,14 +28,18 @@ timelt = '17'
 timegt = '9'
 
 if __name__ == '__main__':
-    API_TOKEN = '5400717778:AAElaDpGCslweXlFKJqecCbsb0wtjueI8iI'
+    API_TOKEN = '5788985434:AAEFIj5fY2HnZw35alMaDBOfCvsBq_xGVPs'
     bot = telebot.TeleBot(API_TOKEN)
-    chat_id = -826999910
+    # chat_id = -826999910
     state = True
-    bot.send_message(chat_id, 'Я начал работать')
+    # bot.send_message(chat_id, 'Я начал работать')
 
 
-    def timer():
+    def timer() -> None:
+        """
+        Проверяет закончился ли рабочй день, если да, то бот работает в беззвучном режиме.
+        :return: None
+        """
         global dis_noti, timegt, timelt
         while True:
             now = datetime.now()
@@ -52,27 +56,35 @@ if __name__ == '__main__':
             time.sleep(3600)
 
 
-    def check_stat_apk():
+    def check_stat_apk() -> None:
+        """
+        Проверяет состояние АПК ФСГС.
+        Есть 2 режима:
+            if non_mes is True:
+                работает в обычном режиме
+            else:
+                записывает состояния в архив, который выдает после возвращения в обычный режим
+        :return: None
+        """
         status_arch = []
         while True:
             if non_mes:
-                if len(status_arch) > 0:
+                if len(status_arch) > 0: # Если архив не пустой выводит бользователю все данные
                     try:
                         bot.send_message(chat_id, '\n'.join(status_arch) + '\n#косякиапк', disable_notification=dis_noti)
-                    except telebot.apihelper.ApiTelegramException:
+                    except telebot.apihelper.ApiTelegramException: # Если данных слишком много отдает тектовый файл со всеми статусами
                         text = '\n'.join(status_arch)
                         with open('Change_files/log.txt', 'w') as txt_f:
                             txt_f.write(text)
                             bot.send_message(message.chat.id, 'Видимо ошибок было слишком много, так что вот вам логи.')
                             bot.send_document(message.chat.id, document=file, disable_notification=dis_noti)
-                    status_arch = []
-                status = apk_status.stat()
-                if len(status) > 0:
+                    status_arch = [] # Обнуляем архив
+                status = apk_status.stat() # Получает статус ФСГС
+                if len(status) > 0: # Если есть ошибка выводит ее и слипается на 15 минут
                     bot.send_message(chat_id, '\n'.join(status) + '\n#косякапк', disable_notification=dis_noti)
                     print('Статус отправлен')
                     time.sleep(900)
-                else:
-                    print('Проблем нет')
+                else: # Если ошибки нет уходит в слип 6 минут
                     time.sleep(360)
             else:
                 stat_l = apk_status.stat()
@@ -82,12 +94,15 @@ if __name__ == '__main__':
                     current_time = now.strftime("%H:%M:%S")
                     status_arch.append(str(current_time) + ':\n' + '\n'.join(stat_l))
                 else:
-                    print('Проблем нет')
-                    time.sleep(60)
+                    time.sleep(360)
 
 
-    def check_message():
-
+    def check_message() -> None:
+        @bot.message_handler(commands=['start'])
+        def mute(message):
+            global non_mes
+            non_mes = False
+            bot.send_message(message.chat.id, 'Я начал работать', disable_notification=dis_noti)
         @bot.message_handler(commands=['mute'])
         def mute(message):
             global non_mes
@@ -100,17 +115,17 @@ if __name__ == '__main__':
             non_mes = True
             bot.send_message(message.chat.id, 'Щас всё расскажу', disable_notification=dis_noti)
 
-        @bot.message_handler(commands=['killapk'])
-        def kill_apk(message):
-            bot.send_message(message.chat.id, 'Убит через: 3', disable_notification=dis_noti)
-            time.sleep(1)
-
-            bot.send_message(message.chat.id, 'Убит через: 2', disable_notification=dis_noti)
-            time.sleep(1)
-            bot.send_message(message.chat.id, 'Убит через: 1', disable_notification=dis_noti)
-            time.sleep(1)
-            bot.send_message(message.chat.id, 'Пиу-Пау', disable_notification=dis_noti)
-            apk_killer.kill()
+        # @bot.message_handler(commands=['killapk'])
+        # def kill_apk(message):
+        #     bot.send_message(message.chat.id, 'Убит через: 3', disable_notification=dis_noti)
+        #     time.sleep(1)
+        #
+        #     bot.send_message(message.chat.id, 'Убит через: 2', disable_notification=dis_noti)
+        #     time.sleep(1)
+        #     bot.send_message(message.chat.id, 'Убит через: 1', disable_notification=dis_noti)
+        #     time.sleep(1)
+        #     bot.send_message(message.chat.id, 'Пиу-Пау', disable_notification=dis_noti)
+        #     apk_killer.kill()
 
         @bot.message_handler(commands=['restart'])
         def restart(message):
@@ -118,7 +133,7 @@ if __name__ == '__main__':
             os.execv(sys.executable, [sys.executable] + sys.argv)
 
         @bot.message_handler(commands=['end'])
-        def kill_apk(message):
+        def kill_цapk(message):
             bot.send_message(message.chat.id, 'Ну всё ухожу, чё бухтеть то', disable_notification=dis_noti)
             thread1.join(timeout=1)
             condition = False
@@ -191,8 +206,8 @@ if __name__ == '__main__':
     thread3.start()
     try:
         bot.polling(non_stop=state)
-    except:
-        print(datetime.now())
+    except ReadTimeout as er:
+        print(er, datetime.now())
     thread2.join(timeout=1)
     thread3.join(timeout=1)
     exit()
