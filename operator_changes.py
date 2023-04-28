@@ -2,20 +2,31 @@ import requests
 import time
 
 
-def changes(name):
-    while True:
+def changes(name: str, username: str = 'anonymous', password: str = 'anonymous') -> list:
+    """
+    Получает изменения по оператору, в теории если бот будет использваться не в группах и каналах можно реализовать
+    авторизацю через ТГ.
+    :param name: Название оператора
+    :param username: имя пользователя
+    :param password: пароль пользователя
+    :return: список изменений по запрошенному оператору
+    """
+    auth_counter = 0
+    while True: # Получает токен для дальнейшей работы
         try:
             resp = requests.post("https://fsgs.cgkipd.ru/auth/login",
-                                 json={"username": "anonymous", "password": "anonymous"}).json()
+                                 json={"username": username, "password": password}).json()
             token = "Bearer " + resp["data"]["access_token"]
             break
         except KeyError:
             print("Данные не верны!")
-            exit()
+            return None
         except:
-            print('Ups')
+            if auth_counter > 5:
+                print("Авторизация не прошла.")
+                return None
+            auth_counter += 1
             time.sleep(2)
-            token = None
             continue
     request_operator = {
         "query": 'query operatorsArchive($filters: OperatorsFilter){operators(filters: $filters){edges{node{shortName source{uuid}}}}}',
@@ -27,7 +38,7 @@ def changes(name):
     }
     if token is not None:
         uuid = requests.post('https://fsgs.cgkipd.ru/federation/graphql', headers={'Authorization': token},
-                             json=request_operator).json()
+                             json=request_operator).json() # Запрашивает юид по оператору
     else:
         exit()
 
@@ -47,11 +58,10 @@ def changes(name):
 
     change_list = []
 
-    for index, nodes in enumerate(response):
-
+    for index, nodes in enumerate(response): # Парсит полученный ответ
         next_index = index + 1
         node = {}
-        if next_index != len(response):
+        if next_index != len(response): # Данные содержат архви данных по операторам, что получить изменения по узла сверяеются даныые по каждой строке
 
             i = 0
             if response[index]['node']['available'] != response[next_index]['node']['available']:

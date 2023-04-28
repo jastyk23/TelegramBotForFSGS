@@ -2,7 +2,6 @@ import json
 import os
 import sys
 from datetime import datetime
-import apk_killer
 import apk_status
 import telebot
 import threading
@@ -11,12 +10,6 @@ from operator_changes import changes
 from requests.exceptions import ReadTimeout
 
 
-# Chat APK -826999910
-# APK bot 5400717778:AAElaDpGCslweXlFKJqecCbsb0wtjueI8iI
-
-# Chat MY 1048052384
-# MY bot 5788985434:AAEFIj5fY2HnZw35alMaDBOfCvsBq_xGVPs
-
 
 operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы Ямала 1", "Минцифры Чувашии", "ЦТИПК", "МОБТИ", "IGS",
              "Ростехинвентаризация", "Рощино", "Мосгоргеотрест", "Татнефть", "ЦИОГД", "КПФУ",
@@ -24,15 +17,14 @@ operators = ("EFT", "ГКУ Ресурсы Ямала 2", "ГКУ Ресурсы
 
 non_mes = True
 dis_noti = True
-timelt = '17'
-timegt = '9'
+timelt = '17' # Рабочее время
+timegt = '9' # Рабочее время
 
 if __name__ == '__main__':
-    API_TOKEN = '5788985434:AAEFIj5fY2HnZw35alMaDBOfCvsBq_xGVPs'
+    API_TOKEN = None
     bot = telebot.TeleBot(API_TOKEN)
-    # chat_id = -826999910
+    chat_id = None # id chata, можно прописать message.message_id и должен будет рабаотать в личный диалогах
     state = True
-    # bot.send_message(chat_id, 'Я начал работать')
 
 
     def timer() -> None:
@@ -98,50 +90,42 @@ if __name__ == '__main__':
 
 
     def check_message() -> None:
+        """
+        Функция для работы на отдлеьном потоке для проверки поступающих сообщений
+        :return: None
+        """
         @bot.message_handler(commands=['start'])
-        def mute(message):
+        def mute(message): # Запускает бота, включает сообщения
+
             global non_mes
             non_mes = False
             bot.send_message(message.chat.id, 'Я начал работать', disable_notification=dis_noti)
         @bot.message_handler(commands=['mute'])
-        def mute(message):
+        def mute(message): # Выключает увдомления бота о работе
             global non_mes
             non_mes = False
             bot.send_message(message.chat.id, 'Молчу 🤫', disable_notification=dis_noti)
 
-        @bot.message_handler(commands=['unmute'])
+        @bot.message_handler(commands=['unmute']) # Включает уведомления обратоно
         def unmute(message):
             global non_mes
             non_mes = True
             bot.send_message(message.chat.id, 'Щас всё расскажу', disable_notification=dis_noti)
 
-        # @bot.message_handler(commands=['killapk'])
-        # def kill_apk(message):
-        #     bot.send_message(message.chat.id, 'Убит через: 3', disable_notification=dis_noti)
-        #     time.sleep(1)
-        #
-        #     bot.send_message(message.chat.id, 'Убит через: 2', disable_notification=dis_noti)
-        #     time.sleep(1)
-        #     bot.send_message(message.chat.id, 'Убит через: 1', disable_notification=dis_noti)
-        #     time.sleep(1)
-        #     bot.send_message(message.chat.id, 'Пиу-Пау', disable_notification=dis_noti)
-        #     apk_killer.kill()
-
-        @bot.message_handler(commands=['restart'])
+        @bot.message_handler(commands=['restart']) # Перезапускает бота
         def restart(message):
             bot.send_message(message.chat.id, 'Перезапускаю', disable_notification=dis_noti)
             os.execv(sys.executable, [sys.executable] + sys.argv)
 
-        @bot.message_handler(commands=['end'])
+        @bot.message_handler(commands=['end']) # Выключает бота
         def kill_цapk(message):
             bot.send_message(message.chat.id, 'Ну всё ухожу, чё бухтеть то', disable_notification=dis_noti)
             thread1.join(timeout=1)
-            condition = False
             bot.stop_polling()
 
-        @bot.message_handler(commands=['changeop'])
+        @bot.message_handler(commands=['changeop']) # Для проверки изменений бота выводит клавиатуру с операторами
         def changer(message):
-            markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+            markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True) # selective показывает клавиатуру только пользователю который ее запросил
             for index, operator in enumerate(operators):
                 if index != 0 and index % 2 != 0:
                     continue
@@ -156,14 +140,14 @@ if __name__ == '__main__':
 
 
 
-        @bot.message_handler(commands=['help'])
+        @bot.message_handler(commands=['help']) # Выводит помощь
         def helper(message):
             bot.send_message(message.chat.id,
                              '/restart - перезапуск бота\n/end - отрубить бота\n/changeop- изменения оперторов\n/status - состояние АПК\n/killapk - судный день АПК\n/mute - пусть умолкнет\n/unmute - будет болтать',
                              disable_notification=dis_noti)
 
         @bot.message_handler(commands=['status'])
-        def kill_apk(message):
+        def status_apk(message): # Выводит состояние АПК ФСГС на данный момент по запросу
             print(dis_noti)
             status = apk_status.stat()
             if len(status) > 0:
@@ -174,19 +158,22 @@ if __name__ == '__main__':
                 print('Проблем нет')
 
         @bot.message_handler(content_types=['text'])
-        def find_changes(message):
+        def find_changes(message): # Отарабатывает получаемые сообщение
             hide = telebot.types.ReplyKeyboardRemove()
-            if message.text == "Убрать кнопки":
+            if message.text == "Убрать кнопки": # Убирает клавиатуру, к сожалению сообщение видят все пользователи если бот используетс в чате
                 bot.send_message(message.chat.id, 'Прячу клавиатуру', reply_markup=hide, disable_notification=dis_noti)
-            elif message.text in operators:
+            elif message.text in operators: # Проверяет оператора в списке
                 ch_list = changes(message.text)
-                if len(ch_list) < 5:
+                if ch_list is None: # Если авторизация не прошла уведомляют пользователя что проблемы со входом
+                    bot.send_message(message.chat.id, 'Пробелмы с авторизацией.', reply_markup=hide,
+                                     disable_notification=dis_noti)
+                elif len(ch_list) < 5: # Если списко изменения небольшой отправляетя данные списком
                     for index, el in enumerate(ch_list):
                         bot.send_message(message.chat.id, '{\n' + ',\n'.join(
                             [f'{key.capitalize()}: {value}' for key, value in el.items()]) + '\n}', reply_markup=hide,
                                          disable_notification=dis_noti)
                         time.sleep(1)
-                else:
+                else: # Если изменений много отправляет JSON с изменениями
                     with open(f'Change_files/{message.text}_change.json', 'w') as file:
                         json.dump(ch_list, file, indent=4, ensure_ascii=False)
                         file.close()
@@ -196,14 +183,9 @@ if __name__ == '__main__':
                         file.close()
 
 
-
-    thread3 = threading.Thread(target=timer, daemon=True, name='Time_thread')
-    thread1 = threading.Thread(target=check_stat_apk, daemon=True, name='Status_thread')
-    thread2 = threading.Thread(target=check_message, daemon=True, name='Check_thread')
-
-    thread1.start()
-    thread2.start()
-    thread3.start()
+    thread1 = threading.Thread(target=check_stat_apk, daemon=True, name='Status_thread').start()
+    thread2 = threading.Thread(target=check_message, daemon=True, name='Check_thread').start()
+    thread3 = threading.Thread(target=timer, daemon=True, name='Time_thread').start()
     try:
         bot.polling(non_stop=state)
     except ReadTimeout as er:

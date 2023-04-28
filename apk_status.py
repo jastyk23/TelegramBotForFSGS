@@ -3,25 +3,28 @@ import time
 from urllib3.exceptions import ProtocolError
 
 
-def stat():
+def stat(username: str = 'anonymous', password: str = 'anonymous') -> list:
+    """
+    Проверка работы сервисов АПК ФСГС
+    :param username: имя пользователя
+    :param password: пароль пользователя
+    :return: Состоянии ФСГС
+    """
     status = []
-    '''try:
-        req = requests.get(url='https://fsgs.cgkipd.ru/', timeout=5)
-    except requests.exceptions.Timeout:
-        status.append('Фронт отлетел')'''
 
     url = "https://fsgs.cgkipd.ru/auth/login"
     data = {
-        "username": "anonymous",
-        "password": "anonymous"
+        "username": username,
+        "password": password
     }
 
     success = False
     i = 0
-    while not success:
-
+    while not success: # Проверка работы авторизации
         try:
             req = requests.post(url=url, json=data, timeout=2)
+            if req.status_code != 200:
+                break
             success = True
 
         except (OSError, ProtocolError, requests.exceptions.ConnectionError) as er:
@@ -36,7 +39,7 @@ def stat():
     state = False
     i = 0
 
-    while not state:
+    while not state: # Проверка работы федерации
         try:
             resp = requests.post(url='https://fsgs.cgkipd.ru/federation/graphql', json={"operationName": "Operators", "query": "query Operators($filters: OperatorsFilter){operators(filters: $filters){edges{node{fullName}}}}", "variables": {"fileters": {"shortName": "EFT"}}}, timeout=2).json()
             if 'errors' not in resp:
@@ -44,7 +47,7 @@ def stat():
             else:
                 raise ResourceWarning
         except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout, ResourceWarning) as er:
-            if i > 10:
+            if i > 5:
                 print(er)
                 break
             i += 1
