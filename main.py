@@ -65,6 +65,8 @@ if __name__ == '__main__':
                     try:
                         bot.send_message(chat_id, '\n'.join(status_arch) + '\n#косякиапк', disable_notification=dis_noti)
                     except telebot.apihelper.ApiTelegramException: # Если данных слишком много отдает тектовый файл со всеми статусами
+                        if not os.path.exists('Change_files'):
+                            os.mkdir('Change_files')
                         text = '\n'.join(status_arch)
                         with open('Change_files/log.txt', 'w') as txt_f:
                             txt_f.write(text)
@@ -174,6 +176,8 @@ if __name__ == '__main__':
                                          disable_notification=dis_noti)
                         time.sleep(1)
                 else: # Если изменений много отправляет JSON с изменениями
+                    if not os.path.exists('Change_files'):
+                        os.mkdir('Change_files')
                     with open(f'Change_files/{message.text}_change.json', 'w') as file:
                         json.dump(ch_list, file, indent=4, ensure_ascii=False)
                         file.close()
